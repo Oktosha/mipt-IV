@@ -25,7 +25,8 @@ void sum(vector<double> &arr, int from, int to,
 vector<double> arr;
 
 int main () {
-	int arrSize = 100000000;
+	int arrSize;
+	cin >> arrSize;
     std::mt19937 gen;
 	uniform_real_distribution<> distr(-1000000000, 1000000000);
 	for (int i = 0; i < arrSize; ++i) {
@@ -50,7 +51,10 @@ int main () {
 	for (int i = 0; i < t.size(); ++i)
 		t[i].join();
 	chrono::steady_clock::time_point end = chrono::steady_clock::now();
-	cout << chrono::duration_cast<std::chrono::microseconds>(end - start).count() << endl;
+	cout << " " << setw(10) 
+		 << chrono::duration_cast<std::chrono::microseconds>(end - start).count()
+		 << " ";
+
 
 	return 0;
 }
