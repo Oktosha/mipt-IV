@@ -51,8 +51,9 @@ int main () {
 	for (int i = 0; i < t.size(); ++i)
 		t[i].join();
 	chrono::steady_clock::time_point end = chrono::steady_clock::now();
-	cout << " " << setw(10) 
-		 << chrono::duration_cast<std::chrono::microseconds>(end - start).count()
+	long long ans_time = chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+	cout << " " << setw(6) 
+		 << ans_time / 1000 << " " << setw(3) << ans_time % 1000
 		 << " ";
 
 
