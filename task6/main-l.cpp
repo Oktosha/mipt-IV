@@ -26,52 +26,29 @@ struct Request {
 	
 };
 
+//Дерево фенвика скопипащено с e-maxx (хотя как ещё его писать?)
+//Я не помню как там переходить от одного элемента к другому
 
-struct RSQ {
-	RSQ(int l, int r): l(l), r(r), left(nullptr), right(nullptr), sum(0) {}
-	int l;
-	int r;
-	RSQ* left;
-	RSQ* right;
-	int sum;
-};
+int fenvik_tree[MAX_N] = {0};
 
-RSQ* build(int l, int r) {
-	RSQ* root = new RSQ(l, r);
-	if (l < r) {
-		root->left = build(l, (l + r)/2);
-		root->right = build(((l + r) / 2) + 1, r);
-	}
-	return root;
+void inc(int x) {
+	for (; x < MAX_N; x = (x | (x+1)))
+		++fenvik_tree[x];
 }
 
-int sum(RSQ* root, int l, int r) {
-	assert((root->l <= l) && (r <= root->r));
-	if ((root->l == l) && (root->r == r))
-		return root->sum;
-	int ans = 0;
-	if (l <= root->left->r) {
-		ans += sum(root->left, l, min(r, root->left->r));
-	}
-	if (r >= root->right->l) {
-		ans += sum(root->right, max(l, root->right->l), r);
-	}
-	return ans;
+int prefix_sum(int r) {
+	int result = 0;
+	for (; r >= 0; r = (r & (r+1)) - 1)
+		result += fenvik_tree[r];
+	return result;
 }
 
-void inc(RSQ* root, int x) {
-	//cout << "l r x " << root->l << " " << root->r << " " << x << endl;
-	assert((root->l <= x) && (x <= root->r));
-	root->sum += 1;
-	if (root->l == root->r) {
-		return;
-	}
-	if (x <= root->left->r) {
-		inc(root->left, x);
-	} else {
-		inc(root->right, x);
-	}
+int sum(int l, int r) {
+	return prefix_sum(r) - prefix_sum(l - 1);
 }
+
+
+
 
 int main() {
 	ifstream fin;
@@ -94,15 +71,15 @@ int main() {
 	}
 
 	sort(request.begin(), request.end());
-	RSQ *rsq = build(1, N);
+
 	int cur_pos = 0;
 	for (auto req : request) {
 		while(cur_pos < req.pos) {
 			++cur_pos;
 			//cout << "inc " << perm[cur_pos] << endl;
-			inc(rsq, perm[cur_pos]);
+			inc(perm[cur_pos]);
 		}
-		a[req.n][req.t] = sum(rsq, req.k, req.l);
+		a[req.n][req.t] = sum(req.k, req.l);
 	}
 
 	for (int i = 0; i < M; ++i) {
